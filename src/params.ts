@@ -82,19 +82,44 @@ export interface SliderDef {
   max: number;
   step: number;
   unit: string;
+  hint?: string;
 }
 
-export const SLIDERS: SliderDef[] = [
-  { key: 'totalLength', label: '全長', min: 100, max: 320, step: 1, unit: 'mm' },
-  { key: 'bowlLength', label: '匙面の長さ', min: 30, max: 120, step: 1, unit: 'mm' },
-  { key: 'bowlWidth', label: '匙面の幅', min: 20, max: 90, step: 1, unit: 'mm' },
-  { key: 'bowlDepth', label: '匙面の深さ', min: 2, max: 30, step: 0.5, unit: 'mm' },
-  { key: 'rimThickness', label: '縁の厚み', min: 1.5, max: 6, step: 0.25, unit: 'mm' },
-  { key: 'neckPos', label: '首の位置', min: 0.22, max: 0.55, step: 0.01, unit: '%' },
-  { key: 'neckWidth', label: '首の太さ', min: 6, max: 24, step: 0.5, unit: 'mm' },
-  { key: 'handleWidth', label: '柄の幅', min: 8, max: 30, step: 0.5, unit: 'mm' },
-  { key: 'handleThickness', label: '柄の厚み', min: 4, max: 18, step: 0.5, unit: 'mm' },
-  { key: 'crankAngle', label: 'クランク角(反り)', min: 0, max: 30, step: 0.5, unit: '°' },
+export interface SliderGroup {
+  title: string;
+  summary: string;
+  sliders: SliderDef[];
+}
+
+export const SLIDER_GROUPS: SliderGroup[] = [
+  {
+    title: '全体',
+    summary: '長さと首の位置',
+    sliders: [
+      { key: 'totalLength', label: '全長', min: 100, max: 320, step: 1, unit: 'mm' },
+      { key: 'neckPos', label: '首の位置', min: 0.22, max: 0.55, step: 0.01, unit: '%', hint: '匙先から全長に対する割合' },
+      { key: 'neckWidth', label: '首の太さ', min: 6, max: 24, step: 0.5, unit: 'mm' },
+    ],
+  },
+  {
+    title: '匙面',
+    summary: 'すくう部分の大きさと深さ',
+    sliders: [
+      { key: 'bowlLength', label: '匙面の長さ', min: 30, max: 120, step: 1, unit: 'mm' },
+      { key: 'bowlWidth', label: '匙面の幅', min: 20, max: 90, step: 1, unit: 'mm' },
+      { key: 'bowlDepth', label: '匙面の深さ', min: 2, max: 30, step: 0.5, unit: 'mm' },
+      { key: 'rimThickness', label: '縁の厚み', min: 1.5, max: 6, step: 0.25, unit: 'mm' },
+    ],
+  },
+  {
+    title: '柄',
+    summary: '握りやすさと反り',
+    sliders: [
+      { key: 'handleWidth', label: '柄の幅', min: 8, max: 30, step: 0.5, unit: 'mm' },
+      { key: 'handleThickness', label: '柄の厚み', min: 4, max: 18, step: 0.5, unit: 'mm' },
+      { key: 'crankAngle', label: 'クランク角(柄の反り)', min: -5, max: 30, step: 0.5, unit: '°' },
+    ],
+  },
 ];
 
 // パラメータ <-> URLクエリ(共有用)

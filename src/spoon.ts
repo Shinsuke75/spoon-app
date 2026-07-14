@@ -178,7 +178,28 @@ export function buildSpoonGeometry(p: SpoonParams, nx = 200, half = 24): THREE.B
   geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geo.setIndex(indices);
   geo.computeVertexNormals();
-  // 中心を原点へ
-  geo.translate(-L / 2, 0, 0);
+  geo.computeBoundingBox();
   return geo;
+}
+
+// 表示用ガイド曲線(背骨=上面中心線 / 平面輪郭=側縁)
+export interface SpoonCurves {
+  spine: THREE.Vector3[];
+  left: THREE.Vector3[];
+  right: THREE.Vector3[];
+}
+
+export function buildSpoonCurves(p: SpoonParams, n = 120): SpoonCurves {
+  const spine: THREE.Vector3[] = [];
+  const left: THREE.Vector3[] = [];
+  const right: THREE.Vector3[] = [];
+  for (let i = 0; i <= n; i++) {
+    const x = (p.totalLength * i) / n;
+    const s = sectionAt(x, p);
+    // 面のわずかに外側に浮かせてZファイティングを避ける
+    spine.push(new THREE.Vector3(x, s.yEdge + s.topOff + 0.5, 0));
+    left.push(new THREE.Vector3(x, s.yEdge + 0.2, -s.w - 0.15));
+    right.push(new THREE.Vector3(x, s.yEdge + 0.2, s.w + 0.15));
+  }
+  return { spine, left, right };
 }
