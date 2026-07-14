@@ -1,0 +1,71 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f1ea;
+  --panel: #ffffff;
+  --text: #3d3229;
+  --accent: #8a6a3e;
+  --border: #e3dccf;
+}
+
+html, body, #app { height: 100%; }
+
+body {
+  font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+#app { display: flex; }
+
+#viewport { flex: 1; min-width: 0; touch-action: none; }
+#viewport canvas { display: block; }
+
+#panel {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+#panel h1 { font-size: 18px; margin-bottom: 14px; color: var(--accent); }
+
+.row { margin-bottom: 10px; }
+
+.row label { display: block; font-size: 12px; margin-bottom: 3px; }
+
+.row select {
+  width: 100%; padding: 6px; font-size: 14px;
+  border: 1px solid var(--border); border-radius: 6px; background: #fff;
+}
+
+.slider-row { margin-bottom: 8px; }
+.slider-row .head {
+  display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 2px;
+}
+.slider-row .val { font-variant-numeric: tabular-nums; color: var(--accent); }
+.slider-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+.buttons { display: flex; gap: 8px; margin: 14px 0 10px; }
+.buttons button {
+  flex: 1; padding: 9px 4px; font-size: 13px; border-radius: 8px;
+  border: 1px solid var(--accent); background: var(--accent); color: #fff;
+  cursor: pointer;
+}
+.buttons button#share { background: #fff; color: var(--accent); }
+.buttons button:active { opacity: 0.8; }
+
+.note { font-size: 11px; color: #8d8478; line-height: 1.5; }
+
+/* スマホ: パネルを下部に */
+@media (max-width: 700px) {
+  #app { flex-direction: column; }
+  #viewport { flex: 1; }
+  #panel {
+    width: 100%; height: 46%;
+    border-left: none; border-top: 1px solid var(--border);
+  }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>スプーンつくるくん</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="viewport"></div>
+      <aside id="panel">
+        <h1>スプーンつくるくん</h1>
+        <div class="row">
+          <label for="preset">プリセット</label>
+          <select id="preset"></select>
+        </div>
+        <div id="sliders"></div>
+        <div class="row">
+          <label for="handleEnd">柄端の形</label>
+          <select id="handleEnd">
+            <option value="round">丸</option>
+            <option value="square">角</option>
+            <option value="paddle">しゃもじ型</option>
+          </select>
+        </div>
+        <div class="buttons">
+          <button id="exportStl">STL書き出し</button>
+          <button id="share">共有リンクをコピー</button>
+        </div>
+        <p class="note">数値の単位はmm。作ったデザインは共有リンクで保存・共有できます。</p>
+      </aside>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
