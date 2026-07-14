@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildSpoonGeometry, buildSpoonCurves } from './spoon';
 import {
   DEFAULT_PARAMS, PRESETS, SLIDER_GROUPS, paramsFromQuery, paramsToQuery,
@@ -51,9 +53,16 @@ app.innerHTML = `
           <select id="preset"></select>
         </div>
         <div id="controls" class="control-groups"></div>
+        <div class="export-row">
+          <span class="export-label">3Dデータ書き出し</span>
+          <div class="export-buttons">
+            <button id="exportStl" type="button">STL</button>
+            <button id="exportObj" type="button">OBJ</button>
+            <button id="exportGlb" type="button">GLB</button>
+          </div>
+        </div>
         <div class="action-buttons">
-          <button id="exportStl" class="primary" type="button">STL書き出し</button>
-          <button id="share" class="secondary" type="button">共有リンクをコピー</button>
+          <button id="share" class="primary" type="button">共有リンクをコピー</button>
         </div>
         <div class="method-note">
           <span class="method-icon" aria-hidden="true">3</span>
@@ -301,16 +310,35 @@ document.querySelector<HTMLButtonElement>('#reset')!.addEventListener('click', (
   frameView('iso');
 });
 
-// STL書き出し
-document.querySelector<HTMLButtonElement>('#exportStl')!.addEventListener('click', () => {
-  const exporter = new STLExporter();
-  const data = exporter.parse(mesh, { binary: true }) as DataView<ArrayBuffer>;
-  const blob = new Blob([data.buffer], { type: 'model/stl' });
+// 3Dデータ書き出し
+function download(blob: Blob, filename: string) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'spoon.stl';
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+document.querySelector<HTMLButtonElement>('#exportStl')!.addEventListener('click', () => {
+  const data = new STLExporter().parse(mesh, { binary: true }) as DataView<ArrayBuffer>;
+  download(new Blob([data.buffer], { type: 'model/stl' }), 'spoon.stl');
+});
+
+document.querySelector<HTMLButtonElement>('#exportObj')!.addEventListener('click', () => {
+  const text = new OBJExporter().parse(mesh);
+  download(new Blob([text], { type: 'text/plain' }), 'spoon.obj');
+});
+
+document.querySelector<HTMLButtonElement>('#exportGlb')!.addEventListener('click', () => {
+  new GLTFExporter().parse(
+    mesh,
+    (result) => {
+      const buffer = result as ArrayBuffer;
+      download(new Blob([buffer], { type: 'model/gltf-binary' }), 'spoon.glb');
+    },
+    (error) => console.error(error),
+    { binary: true },
+  );
 });
 
 // 共有リンク

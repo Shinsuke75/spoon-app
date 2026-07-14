@@ -77,23 +77,34 @@ function sectionAt(x: number, p: SpoonParams): Section {
   const w = softMax(wBowl, wHand);
 
   // ---- 側面プロファイル ----
-  // 匙面→柄への遷移係数
-  const sH = smooth(Lb * 0.92, neckX + (L - neckX) * 0.12, x);
+  // 匙面→柄への遷移係数(広めの窓で厚みの出現をなだらかに)
+  const sH = smooth(Lb * 0.8, neckX + (L - neckX) * 0.25, x);
 
-  // 皿の深さ: 匙面中央で最大、先端と首で0
+  // 皿の深さ: 匙面中央で最大、先端と首で0(指数>1で両端の傾きも0に)
   let dish = 0;
   if (x >= 0 && x <= Lb) {
     const v = x / Lb;
-    dish = p.bowlDepth * Math.pow(Math.max(0, 4 * v * (1 - v)), 0.85);
+    dish = p.bowlDepth * Math.pow(Math.max(0, 4 * v * (1 - v)), 1.15);
   }
 
-  // 側縁の高さ: 匙面ではほぼ水平、首からクランク角で立ち上がる
+  // クランクの立ち上がり: smoothstepの積分で傾きが単調に0→tanγへ変化する
+  // (以前の「一次ランプ×smoothstep」は傾きが波打ち、側面にうねりが出ていた)
   const crank = Math.tan((p.crankAngle * Math.PI) / 180);
-  const rise = smooth(neckX - Lb * 0.25, neckX + (L - neckX) * 0.35, x);
-  const yEdge = crank * Math.max(0, x - neckX * 0.9) * rise;
+  const riseStart = neckX - 6;
+  const riseLen = Math.min(45, Math.max(20, (L - neckX) * 0.35));
+  let rise = 0;
+  if (x > riseStart && x < riseStart + riseLen) {
+    const u = (x - riseStart) / riseLen;
+    rise = crank * riseLen * (u * u * u - 0.5 * u * u * u * u);
+  } else if (x >= riseStart + riseLen) {
+    rise = crank * (x - riseStart - riseLen * 0.5);
+  }
+
+  // 側縁: 柄では中心線よりわずかに下げ、匙面の縁線から柄の上面へ連続させる
+  const th = p.handleThickness;
+  const yEdge = rise - sH * th * 0.12;
 
   // 断面中央の上下オフセット(匙面: 凹んだ皿 / 柄: 丸みのある山)
-  const th = p.handleThickness;
   const topOff = lerp(-dish, th * 0.5, sH);
   const botOff = lerp(-(dish + p.rimThickness), -th * 0.5, sH);
 

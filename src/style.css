@@ -17,7 +17,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #ece7dc; }
 button, input, select { font: inherit; }
 button { color: inherit; }
 
-.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.app-shell { height: 100vh; display: flex; flex-direction: column; }
 .topbar {
   height: 74px;
   padding: 0 30px;
@@ -47,7 +47,7 @@ button { color: inherit; }
   gap: 18px;
 }
 .viewer-card {
-  min-height: calc(100vh - 110px);
+  min-height: 0;
   position: relative;
   overflow: hidden;
   border-radius: 18px;
@@ -121,13 +121,22 @@ input[type='range']::-moz-range-thumb { width: 12px; height: 12px; border: 3px s
 .end-options span { display: grid; min-height: 38px; place-items: center; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: 11px; cursor: pointer; }
 .end-options input:checked + span { border-color: var(--forest); background: #e3e9e2; color: var(--forest); font-weight: 700; }
 
-.action-buttons { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.export-row { margin-top: 20px; display: grid; gap: 8px; }
+.export-label { font-size: 12px; font-weight: 600; }
+.export-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.export-buttons button {
+  min-height: 40px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--forest); background: transparent; color: var(--forest);
+  letter-spacing: .06em;
+}
+.export-buttons button:active { opacity: .8; }
+
+.action-buttons { margin-top: 10px; display: grid; gap: 8px; }
 .action-buttons button {
   min-height: 44px; border-radius: 9px; font-size: 13px; cursor: pointer;
   border: 1px solid var(--forest);
 }
 .action-buttons .primary { background: var(--forest); color: #fff; }
-.action-buttons .secondary { background: transparent; color: var(--forest); }
 .action-buttons button:active { opacity: .8; }
 
 .method-note { margin-top: 16px; padding: 14px; display: flex; gap: 11px; background: #ebe7dc; border-radius: 10px; }
@@ -136,6 +145,7 @@ input[type='range']::-moz-range-thumb { width: 12px; height: 12px; border: 3px s
 .method-note p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
 
 @media (max-width: 800px) {
+  .app-shell { height: auto; min-height: 100vh; }
   .topbar { height: 61px; padding: 0 17px; }
   .brand strong { font-size: 19px; }
   .brand div span { display: none; }
